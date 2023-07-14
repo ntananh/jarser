@@ -54,13 +54,25 @@ public interface ParserCombinator<T> extends Parser<Result<T>> {
     }
 
     /**
+     * Builds a new parser combinator applies {@code this} parser repeatedly zero to N times returning
+     * results in list. For example {@code string("foo").many()} would parse {@code "foofoo"} by
+     * returning {@code ["foo", "foo"]}
+     *
+     * @return new parser combinator that accepts inputs applying {@code this} parser as many times as
+     * possible.
+     */
+    default ParserCombinator<List<T>> many() {
+        return new ParserCombinatorMany<>(this);
+    }
+
+    /**
      * Builds a new parser combinator applies {@code this} parser repeatedly zero to N times by using
      * given parser as a separator. Results are returned in a list. For example {@code
      * string("foo").many(string(";"))} would parse {@code "foo;foo;foo"} by returning {@code ["foo",
      * "foo", "foo"]}
      *
      * @param separator parser for parsing separator
-     * @return new parser combinator that accepts inputs applying {@code this} parser as many time as
+     * @return new parser combinator that accepts inputs applying {@code this} parser as many times as
      * possible
      */
     default ParserCombinator<List<T>> many(ParserCombinator<?> separator) {
